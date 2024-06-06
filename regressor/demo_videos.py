@@ -33,6 +33,16 @@ def clean_directory(dirpath: Path):
     return
 
 
+def merge_frames(video_name, output_dirpath: Path, frame_rate: int = 60):
+    frames_dirpath = output_dirpath / f'{video_name}/frames'
+    output_filepath = output_dirpath / f'{video_name}/{video_name}.mp4'
+    output_filepath.parent.mkdir(parents=True, exist_ok=True)
+    # cmd = f'/home/nagabhushan/softwares/FFmpeg/ffmpeg-4.4-i686-static/ffmpeg -r {frame_rate} -pattern_type glob -i "{frames_dirpath.absolute().as_posix()}/*_smpl.png" -c:v libx264 -pix_fmt yuv420p {output_filepath.absolute().as_posix()}'
+    cmd = f'ffmpeg -r {frame_rate} -pattern_type glob -i "{frames_dirpath.as_posix()}/*_hd_stage_02_overlay.png" -pix_fmt yuv420p {output_filepath.as_posix()}'
+    execute_shell_command(cmd)
+    return
+
+
 def main():
     args = parse_args()
 
@@ -71,6 +81,7 @@ def main():
         demo_args.exp_opts.append(f'datasets.pose.openpose.img_folder={tmp_images_dirpath.stem}')
         demo_args.exp_opts.append(f'datasets.pose.openpose.keyp_folder={tmp_keypoints_dirpath.stem}')
         call_main(demo_args)
+        merge_frames(video_name, output_dirpath)
     return
 
 
