@@ -9,8 +9,7 @@ import torch
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 
-from torchvision.models.resnet import (ResNet, Bottleneck, BasicBlock,
-                                       model_urls)
+from torchvision.models.resnet import ResNet, Bottleneck, BasicBlock
 
 
 class RegressionResNet(ResNet):

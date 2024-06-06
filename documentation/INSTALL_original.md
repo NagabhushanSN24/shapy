@@ -10,12 +10,9 @@ The code has been tested with Python 3.8, CUDA 10.2 and PyTorch 1.7.1 on Ubuntu 
     cd shapy
     export PYTHONPATH=$PYTHONPATH:$(pwd)/attributes/
 
-    conda create -n SHAPY python=3.8
-    conda activate SHAPY
-    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    python3.8 -m venv .venv/shapy
+    source .venv/shapy/bin/activate
     pip install -r requirements.txt
-    pip install pytorch-lightning==1.4.0rc0
-    pip install opencv-python
 
     cd attributes
     python setup.py install
@@ -24,40 +21,7 @@ The code has been tested with Python 3.8, CUDA 10.2 and PyTorch 1.7.1 on Ubuntu 
     export CUDA_SAMPLES_INC=$(pwd)/include
     pip install -r requirements.txt
     python setup.py install
-    cd ..
     ```
-
-* Set OPENGL Platform to OS Mesa
-```shell
-export PYOPENGL_PLATFORM='osmesa'
-```
-
-* Get Pyrender Working with OSMesa <br>
-Follow the instruction here: [link](https://pyrender.readthedocs.io/en/latest/install/index.html#osmesa) 
-
-  
-* If you get an error saying `ImportError: cannot import name 'OSMesaCreateContextAttribs' from 'OpenGL.osmesa'`, install a compatible version of `pyopengl`
-```shell
-cd ..
-git clone https://github.com/mmatl/pyopengl.git
-pip install ./pyopengl
-cd shapy
-```
-
-* If you get an error w.r.t. jpeg4py package saying `AttributeError: 'JPEG' object has no attribute 'decompressor'`, install `libturbojpeg`
-```shell
-sudo apt-get install libturbojpeg
-```
-
-* If you get an error saying `numpy` has no attribute `bool`, install a previous version of `numpy`
-```shell
-pip3 install mxnet-mkl==1.6.0 numpy==1.23.1
-```
-
-* If you get an error saying `cannot import name 'get_num_classes' from 'torchmetrics.utilities.data'`, downgrade `torchmetrics` to `v0.6.0`
-```shell
-pip install torchmetrics==0.6.0
-```
 
 ### Body model and model data
 
@@ -72,6 +36,38 @@ data
 └── utility_files
 ```
 
+#### SMPL Model
+
+Download the neutral SMPL-X Model
+[from the official website](https://smpl-x.is.tue.mpg.de/).
+You can also optionally [download SMPL](https://smpl.is.tue.mpg.de/)
+Your body model subfolder should have the following structure:
+
+```bash
+data
+├── body_models
+    └── smpl
+        ├── SMPL_NEUTRAL.pkl
+        ├── SMPL_FEMALE.pkl
+        ├── SMPL_MALE.pkl
+    └── smplx
+        ├── SMPLX_NEUTRAL.npz
+        ├── SMPLX_FEMALE.npz
+        ├── SMPLX_MALE.npz
+```
+
+#### ExPose and SHAPY utilities
+
+##### Option 1 (chose if you have not yet registered on the SHAPY website)
+Download `shapy_data.zip` from our [website](https://shapy.is.tue.mpg.de) and extract it in the data folder:
+
+```bash
+cd data
+unzip shapy_data.zip
+```
+
+##### Option 2 (chose if you have already registered on the SHAPY website)
+Run `download_data.sh`. This will request your username and password for the SHAPY website and then download and extract the SHAPY model data.
 
 ```bash
 cd data

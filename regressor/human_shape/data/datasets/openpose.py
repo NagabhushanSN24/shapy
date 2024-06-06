@@ -87,7 +87,7 @@ class OpenPose(dutils.Dataset):
 
         self.img_paths = []
         self.keypoints = []
-        for img_fname in os.listdir(self.img_folder):
+        for img_fname in sorted(os.listdir(self.img_folder)):
             fname, _ = osp.splitext(img_fname)
 
             keyp_path = osp.join(

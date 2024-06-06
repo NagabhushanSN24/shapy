@@ -18,6 +18,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from pathlib import Path
+
 from .lbs import (
     lbs, vertices2landmarks, find_dynamic_lmk_idx_and_bcoords, blend_shapes)
 from .utils import (
@@ -544,7 +546,21 @@ class SMPLX(SMPLH):
         smplx_path = os.path.join(model_folder, model_fn)
         logger.info(f'Loading model from: {smplx_path}')
         if ext == 'npz':
-            data_struct = Struct(**np.load(smplx_path, allow_pickle=True))
+            # data_struct = Struct(**np.load(smplx_path, allow_pickle=True))
+            # smplx_dict = {}
+            # with np.load(smplx_path, allow_pickle=True) as smplx_data:
+            #     for file_name in smplx_data.files:
+            #         print(f'loading smplx_neutral/{file_name}')
+            #         smplx_dict[file_name] = smplx_data[file_name]
+            smplx_npz_path = Path(smplx_path)
+            smplx_pkl_path = smplx_npz_path.parent / f'{smplx_npz_path.stem}.pkl'
+            with open(smplx_pkl_path.as_posix(), 'rb') as smplx_file:
+                smplx_dict = pickle.load(smplx_file, encoding='latin1')
+            for key in smplx_dict.keys():
+                print(f'loading smplx_neutral/{key}')
+                if isinstance(smplx_dict[key], list) and isinstance(smplx_dict[key][0], np.ndarray):
+                    smplx_dict[key] = np.stack(smplx_dict[key])
+            data_struct = Struct(**smplx_dict)
         else:
             with open(smplx_path, 'rb') as smplx_file:
                 data_struct = Struct(**pickle.load(smplx_file))

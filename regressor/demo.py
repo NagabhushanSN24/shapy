@@ -2,7 +2,7 @@ import sys
 import os
 import os.path as osp
 
-os.environ['PYOPENGL_PLATFORM'] = 'egl'
+os.environ['PYOPENGL_PLATFORM'] = 'osmesa'
 
 import matplotlib.pyplot as plt
 import PIL.Image as pil_img

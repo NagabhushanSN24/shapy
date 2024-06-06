@@ -822,7 +822,11 @@ class HDRenderer(OverlayRenderer):
 
             if render_bg:
                 if return_with_alpha:
-                    valid_mask = (color[3] > 0)[np.newaxis]
+                    # Alpha channel was not working previously, need to check again
+                    # Until this is fixed use hack with depth image to get the opacity
+                    # valid_mask = (color[3] > 0)[np.newaxis]
+                    valid_mask = (depth > 0)[None]
+                    color = np.pad(color, [[0, 1], [0, 0], [0, 0]], mode='constant', constant_values=1.0)
 
                     if bg_imgs[bidx].shape[0] < 4:
                         curr_bg_img = np.concatenate(
