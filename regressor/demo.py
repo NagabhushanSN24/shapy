@@ -355,51 +355,7 @@ def main(
     logger.info(f'Average inference time: {total_time / cnt}')
 
 
-if __name__ == '__main__':
-    #  torch.multiprocessing.set_start_method('fork')
-    torch.backends.cudnn.benchmark = True
-    torch.backends.cudnn.deterministic = False
-
-    arg_formatter = argparse.ArgumentDefaultsHelpFormatter
-    description = 'PyTorch SMPL-X Regressor Demo'
-    parser = argparse.ArgumentParser(formatter_class=arg_formatter,
-                                     description=description)
-
-    parser.add_argument('--exp-cfg', type=str, dest='exp_cfgs',
-                        nargs='+',
-                        help='The configuration of the experiment')
-    parser.add_argument('--output-folder', dest='output_folder',
-                        default='demo_output', type=str,
-                        help='The folder where the demo renderings will be' +
-                        ' saved')
-    parser.add_argument('--datasets', nargs='+',
-                        default=['openpose'], type=str,
-                        help='Datasets to process')
-    parser.add_argument('--show', default=False,
-                        type=lambda arg: arg.lower() in ['true'],
-                        help='Display the results')
-    parser.add_argument('--pause', default=-1, type=float,
-                        help='How much to pause the display')
-    parser.add_argument('--exp-opts', default=[], dest='exp_opts',
-                        nargs='*',
-                        help='The configuration of the Detector')
-    parser.add_argument('--focal-length', dest='focal_length', type=float,
-                        default=5000,
-                        help='Focal length')
-    parser.add_argument('--save-vis', dest='save_vis', default=False,
-                        type=lambda x: x.lower() in ['true'],
-                        help='Whether to save visualizations')
-    parser.add_argument('--save-mesh', dest='save_mesh', default=False,
-                        type=lambda x: x.lower() in ['true'],
-                        help='Whether to save meshes')
-    parser.add_argument('--save-params', dest='save_params', default=False,
-                        type=lambda x: x.lower() in ['true'],
-                        help='Whether to save parameters')
-    parser.add_argument('--split', default='test', type=str,
-                        choices=['train', 'test', 'val'],
-                        help='Which split to use')
-
-    cmd_args = parser.parse_args()
+def call_main(cmd_args):
 
     show = cmd_args.show
     output_folder = cmd_args.output_folder
@@ -437,3 +393,57 @@ if __name__ == '__main__':
              save_params=save_params,
              split=split,
              )
+    return
+
+
+def parse_args():
+    arg_formatter = argparse.ArgumentDefaultsHelpFormatter
+    description = 'PyTorch SMPL-X Regressor Demo'
+    parser = argparse.ArgumentParser(formatter_class=arg_formatter,
+                                     description=description)
+
+    parser.add_argument('--exp-cfg', type=str, dest='exp_cfgs',
+                        nargs='+',
+                        help='The configuration of the experiment')
+    parser.add_argument('--output-folder', dest='output_folder',
+                        default='demo_output', type=str,
+                        help='The folder where the demo renderings will be' +
+                             ' saved')
+    parser.add_argument('--datasets', nargs='+',
+                        default=['openpose'], type=str,
+                        help='Datasets to process')
+    parser.add_argument('--show', default=False,
+                        type=lambda arg: arg.lower() in ['true'],
+                        help='Display the results')
+    parser.add_argument('--pause', default=-1, type=float,
+                        help='How much to pause the display')
+    parser.add_argument('--exp-opts', default=[], dest='exp_opts',
+                        nargs='*',
+                        help='The configuration of the Detector')
+    parser.add_argument('--focal-length', dest='focal_length', type=float,
+                        default=5000,
+                        help='Focal length')
+    parser.add_argument('--save-vis', dest='save_vis', default=False,
+                        type=lambda x: x.lower() in ['true'],
+                        help='Whether to save visualizations')
+    parser.add_argument('--save-mesh', dest='save_mesh', default=False,
+                        type=lambda x: x.lower() in ['true'],
+                        help='Whether to save meshes')
+    parser.add_argument('--save-params', dest='save_params', default=False,
+                        type=lambda x: x.lower() in ['true'],
+                        help='Whether to save parameters')
+    parser.add_argument('--split', default='test', type=str,
+                        choices=['train', 'test', 'val'],
+                        help='Which split to use')
+
+    cmd_args = parser.parse_args()
+    return cmd_args
+
+
+if __name__ == '__main__':
+    #  torch.multiprocessing.set_start_method('fork')
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.deterministic = False
+
+    cmd_args = parse_args()
+    call_main(cmd_args)
