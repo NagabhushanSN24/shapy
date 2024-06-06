@@ -304,7 +304,7 @@ def main(
 
         stage_n_out = model_output['stage_02']
         #  logger.info(stage_n_out.keys())
-        for idx in tqdm(range(len(body_targets)), 'Saving ...'):
+        for idx in tqdm(range(len(body_targets)), desc='Saving ...', leave=False):
             fname = body_targets[idx].get_field('fname')
 
 
@@ -320,7 +320,7 @@ def main(
 
             if save_vis:
                 for name, curr_img in out_img.items():
-                    print(osp.join(curr_out_path, f'{imgfname}_{name}.png'))
+                    # print(osp.join(curr_out_path, f'{imgfname}_{name}.png'))
                     pil_img.fromarray(curr_img[idx]).save(
                         osp.join(curr_out_path, f'{imgfname}_{name}.png'))
 

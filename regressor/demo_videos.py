@@ -67,8 +67,8 @@ def main():
             keypoints_path = Path(keypoints_path_format.format(video_name=video_name, frame_num=frame_num))
             tmp_frame_path = tmp_images_dirpath / f'{frame_num:04}.png'
             tmp_keypoints_path = tmp_keypoints_dirpath / f'{frame_num:04}.json'
-            frame_path.symlink_to(tmp_frame_path)
-            keypoints_path.symlink_to(tmp_keypoints_path)
+            tmp_frame_path.symlink_to(frame_path)
+            tmp_keypoints_path.symlink_to(keypoints_path)
 
         video_output_dirpath = output_dirpath / f'{video_name}/frames'
         video_output_dirpath.mkdir(parents=True, exist_ok=True)
@@ -98,7 +98,7 @@ def parse_args():
                         default='../../../../../../databases/spree_internal/data/rgb_png', type=str,
                         help='The path to directory containing videos (frames)')
     parser.add_argument('--keypoints-path-format', dest='keypoints_path_format', type=str,
-                        default='../../../../research/001_VitPose_halpe/runs/testing/test0001/{video_name}/json/{frame_num:04}.json',
+                        default='../../../../research/001_VitPose_Halpe/runs/testing/test0001/{video_name}/json/{frame_num:04}.json',
                         help='The formatted path to directory containing 2D keypoints (video_name and frame_num will be inserted)')
     parser.add_argument('--output-dirpath', dest='output_dirpath',
                         default='../runs/testing/test0000', type=str,
