@@ -28,10 +28,13 @@ this_filename = this_filepath.stem
 
 
 class Renderer(object):
-    def __init__(self, focal_length=600, img_w=512, img_h=512, faces=None, same_mesh_color=False):
+    def __init__(self, focal_length=600, img_w=512, img_h=512, camera_center=None, faces=None, same_mesh_color=False):
         os.environ['PYOPENGL_PLATFORM'] = 'osmesa'
         self.renderer = pyrender.OffscreenRenderer(viewport_width=img_w, viewport_height=img_h, point_size=1.0)
-        self.camera_center = [img_w // 2, img_h // 2]
+        if camera_center is not None:
+            self.camera_center = camera_center
+        else:
+            self.camera_center = [img_w // 2, img_h // 2]
         self.focal_length = focal_length
         self.faces = faces
         self.same_mesh_color = same_mesh_color
@@ -140,7 +143,7 @@ def main():
 
     image_path = Path(f'../../../../../../databases/spree_internal/data/rgb_png/{video_name}/{frame_num:04}.png')
     smplx_data_path = Path(f'../../runs/testing/test{test_num:04}/{video_name}/frames/{frame_num:04}.npz')
-    models_dirpath = Path('../data/body_models/smplx/models/smplx')
+    models_dirpath = Path('../data/body_models/smplx')
 
     image = read_image(image_path)
     smplx_data = read_smplx_data(smplx_data_path)
@@ -149,7 +152,8 @@ def main():
     body_pose_matrices = smplx_data['body_pose']  # (21, 3, 3)
     global_rotation_matrix = smplx_data['global_rot']  # (1, 3, 3)
     pose_matrices = numpy.concatenate([global_rotation_matrix, body_pose_matrices], axis=0)  # (22, 3, 3)
-    camera_translation = smplx_data['camera']  # (3, )
+    camera_translation = smplx_data['transl']  # (3, )
+    camera_center = smplx_data['center']  # (2, )
     num_shape_params = shape_params.shape[0]  # = 10
 
     shape_params_tr = torch.from_numpy(shape_params).float().unsqueeze(0)
@@ -168,9 +172,9 @@ def main():
     translated_vertices = raw_vertices + camera_translation
 
     h, w = image.shape[:2]
-    focal_length = (h**2 + w**2) ** 0.5
+    focal_length = 5000
 
-    renderer = Renderer(focal_length=focal_length, img_w=w, img_h=h, faces=faces, same_mesh_color=False)
+    renderer = Renderer(focal_length=focal_length, img_w=w, img_h=h, camera_center=camera_center, faces=faces, same_mesh_color=False)
     front_view = renderer.render_front_view(translated_vertices.cpu().numpy(), bg_img_rgb=image.copy())
     save_image(Path('./front_view.png'), front_view)
     return
