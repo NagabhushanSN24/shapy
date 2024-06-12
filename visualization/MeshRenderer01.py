@@ -148,6 +148,9 @@ def main():
     image = read_image(image_path)
     smplx_data = read_smplx_data(smplx_data_path)
 
+    h, w = image.shape[:2]
+    focal_length = 5000
+
     shape_params = smplx_data['betas']  # (10, )
     body_pose_matrices = smplx_data['body_pose']  # (21, 3, 3)
     global_rotation_matrix = smplx_data['global_rot']  # (1, 3, 3)
@@ -170,9 +173,6 @@ def main():
     faces = smplx_model.faces
     raw_vertices = smplx_output.vertices
     translated_vertices = raw_vertices + camera_translation
-
-    h, w = image.shape[:2]
-    focal_length = 5000
 
     renderer = Renderer(focal_length=focal_length, img_w=w, img_h=h, camera_center=camera_center, faces=faces, same_mesh_color=False)
     front_view = renderer.render_front_view(translated_vertices.cpu().numpy(), bg_img_rgb=image.copy())
