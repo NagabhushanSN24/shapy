@@ -1,5 +1,6 @@
 # Computes Mean Per Joint Projected Pixel Error between SMPL-X joints and VitPose_Halpe Keypoints
 
+import collections.abc
 import datetime
 import json
 import time
@@ -15,6 +16,7 @@ from tqdm import tqdm
 this_filepath = Path(__file__)
 this_filename = this_filepath.stem
 this_qa_name = this_filename
+num_round_off_digits = 2
 
 # https://github.com/spree3d/bedlam/blob/main/train/core/smplx_trainer_spreeV2.py#L42--L52
 body_mapping = numpy.array([55, 12, 17, 19, 21, 16, 18, 20, 0, 2, 5,
@@ -138,16 +140,43 @@ class MPJPPE:
     @staticmethod
     def read_smplx_data(smplx_data_path: Path):
         # Load torch tensors on CPU directly: https://stackoverflow.com/a/78399538/3337089
-        torch.serialization.register_package(0, lambda x: x.device.type, lambda x, _: x.cpu())
+        # torch.serialization.register_package(0, lambda x: x.device.type, lambda x, _: x.cpu())
+        smplx_dict = {}
         with numpy.load(smplx_data_path.as_posix(), allow_pickle=True) as smplx_data:
-            smplx_data = {key: smplx_data[key] for key in smplx_data.files}
-        return smplx_data
+            # smplx_data = {key: smplx_data[key] for key in smplx_data.files}
+            for key in smplx_data.files:
+                if isinstance(smplx_data[key], torch.Tensor):
+                    smplx_dict[key] = smplx_data[key].cpu()
+                else:
+                    smplx_dict[key] = smplx_data[key]
+        return smplx_dict
 
     @staticmethod
     def read_gt_keypoints_data(keypoints_path: Path):
         with open(keypoints_path.as_posix(), 'r') as keypoints_file:
             keypoints_data = json.load(keypoints_file)
         return keypoints_data
+
+
+def nested_dict_update(old_dict, new_dict):
+    for key, value in new_dict.items():
+        if isinstance(value, collections.abc.Mapping):
+            old_dict[key] = nested_dict_update(old_dict.get(key, {}), value)
+        else:
+            old_dict[key] = value
+    return old_dict
+
+
+def add_dict_to_json(json_filepath: Path, new_data_dict: dict):
+    if json_filepath.exists():
+        with open(json_filepath, 'r') as json_file:
+            data_dict = json.load(json_file)
+    else:
+        data_dict = {}
+    data_dict = nested_dict_update(data_dict, new_data_dict)
+    with open(json_filepath, 'w') as json_file:
+        json.dump(data_dict, json_file, indent=4)
+    return
 
 
 def demo1():
@@ -170,7 +199,7 @@ def demo2():
     On a run folder
     :return:
     """
-    test_num = 2
+    test_num = 1
     num_shape_params = 10
     resolution = (3840, 2160)
 
@@ -182,17 +211,26 @@ def demo2():
     qa_data = []
     for video_dirpath in tqdm(sorted(test_dirpath.iterdir())):
         video_name = video_dirpath.stem
-        for smplx_data_path in tqdm(sorted(video_dirpath.joinpath('frames').iterdir()), desc=video_name, leave=True):
+        if (not video_dirpath.is_dir()) or video_name in ['quality_scores']:
+            continue
+
+        for smplx_data_path in tqdm(sorted(video_dirpath.joinpath('frames').glob('*.npz')), desc=video_name, leave=True):
             frame_num = int(smplx_data_path.stem)
-            gt_keypoints_path = gt_keypoints_dirpath / f'json/{video_name}/{frame_num:04}.json'
+            gt_keypoints_path = gt_keypoints_dirpath / f'{video_name}/json/{frame_num:04}.json'
 
             qa_score = qa_computer.compute_mpjppe(smplx_data_path, gt_keypoints_path)
             qa_data.append((video_name, frame_num, qa_score))
-    qa_data = pandas.DataFrame(qa_data, columns=['video_name', 'frame_num', 'mpjppe'])
+    qa_data = pandas.DataFrame(qa_data, columns=['video_name', 'frame_num', this_qa_name])
+    avg_qa_score = qa_data[this_qa_name].mean()
+    qa_data = qa_data.round({this_qa_name: num_round_off_digits})
 
     qa_output_path = test_dirpath / f'quality_scores/{this_qa_name}.csv'
     qa_output_path.parent.mkdir(parents=True, exist_ok=True)
     qa_data.to_csv(qa_output_path, index=False)
+
+    qa_avg_path = test_dirpath / f'quality_scores/AverageScores.json'
+    qa_avg_data = {this_qa_name: avg_qa_score}
+    add_dict_to_json(qa_avg_path, qa_avg_data)
     return
 
 
