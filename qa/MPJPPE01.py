@@ -221,7 +221,7 @@ def demo2():
             qa_score = qa_computer.compute_mpjppe(smplx_data_path, gt_keypoints_path)
             qa_data.append((video_name, frame_num, qa_score))
     qa_data = pandas.DataFrame(qa_data, columns=['video_name', 'frame_num', this_qa_name])
-    avg_qa_score = qa_data[this_qa_name].mean()
+    avg_qa_score = qa_data[this_qa_name].mean().round(4)
     qa_data = qa_data.round({this_qa_name: num_round_off_digits})
 
     qa_output_path = test_dirpath / f'quality_scores/{this_qa_name}.csv'
@@ -231,6 +231,7 @@ def demo2():
     qa_avg_path = test_dirpath / f'quality_scores/AverageScores.json'
     qa_avg_data = {this_qa_name: avg_qa_score}
     add_dict_to_json(qa_avg_path, qa_avg_data)
+    print(f'Average {this_qa_name}: {avg_qa_score}')
     return
 
 
