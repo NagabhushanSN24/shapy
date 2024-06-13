@@ -26,7 +26,7 @@ def save_image(image_path: Path, image):
 
 
 def main():
-    test_num = 3
+    test_num = 1
     qa_name = 'MPJPPE01'
 
     test_dirpath = Path(f'../../runs/testing/test{test_num:04}')
@@ -39,14 +39,14 @@ def main():
             continue
 
         for image_mesh_path in tqdm(sorted(video_dirpath.glob('frames/*_hd_stage_02_overlay.png')), desc=video_name, leave=False):
-            frame_num = int(image_mesh_path.stem)
+            frame_num = int(image_mesh_path.stem[:4])
             output_path = video_dirpath / f'frames/{frame_num:04}_image_mesh_quality.png'
             if output_path.exists():
                 continue
 
-            qa_score = qa_scores_data[(qa_scores_data['video_name'] == video_name) & (qa_scores_data['frame_num'] == frame_num)]['qa_score'].values[0]
+            qa_score = qa_scores_data[(qa_scores_data['video_name'] == video_name) & (qa_scores_data['frame_num'] == frame_num)][qa_name].values[0]
             image_mesh = read_image(image_mesh_path)
-            cv2.putText(image_mesh, qa_score, (50, 3840-150), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 128, 128), 3, cv2.LINE_AA)
+            cv2.putText(image_mesh, str(qa_score), (50, 3840-150), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 128, 128, 255), 3, cv2.LINE_AA)
             save_image(output_path, image_mesh)
     return
 
