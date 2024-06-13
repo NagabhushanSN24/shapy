@@ -1,4 +1,5 @@
 # Computes Mean Per Joint Projected Pixel Error between SMPL-X joints and VitPose_Halpe Keypoints
+# Computes MPJPPE only on body joints. Excludes face and hand joints.
 
 import collections.abc
 import datetime
@@ -128,11 +129,11 @@ class MPJPPE:
         lhand_keypoints2d = pred_joints2d[lhand_mapping]  # 21 keypoints
         rhand_keypoints2d = pred_joints2d[rhand_mapping]  # 21 keypoints
         # face_keypoints2d = pred_joints2d[face_mapping]
-        pred_joints2d_selected = numpy.concatenate([body_keypoints2d, lhand_keypoints2d, rhand_keypoints2d], axis=0)
+        pred_joints2d_selected = numpy.concatenate([body_keypoints2d], axis=0)
         return pred_joints2d_selected
 
     def select_gt_keypoints(self, gt_keypoints: numpy.ndarray, weights: numpy.ndarray):
-        num_required_keypoints = body_mapping.size + lhand_mapping.size + rhand_mapping.size
+        num_required_keypoints = body_mapping.size
         gt_keypoints_selected = gt_keypoints[:num_required_keypoints]
         weights_selected = weights[:num_required_keypoints]
         return gt_keypoints_selected, weights_selected
