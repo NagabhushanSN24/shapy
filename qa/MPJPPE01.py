@@ -214,7 +214,7 @@ def demo2():
         if (not video_dirpath.is_dir()) or video_name in ['quality_scores']:
             continue
 
-        for smplx_data_path in tqdm(sorted(video_dirpath.joinpath('frames').glob('*.npz')), desc=video_name, leave=True):
+        for smplx_data_path in tqdm(sorted(video_dirpath.joinpath('frames').glob('*.npz')), desc=video_name, leave=False):
             frame_num = int(smplx_data_path.stem)
             gt_keypoints_path = gt_keypoints_dirpath / f'{video_name}/json/{frame_num:04}.json'
 
