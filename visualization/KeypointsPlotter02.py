@@ -1,28 +1,24 @@
 # Plots projected joints on rendered mesh
 # Uses the mesh renderer from Phong's code
 
+import colorsys
 import datetime
+import os
 import time
 import traceback
-
 from pathlib import Path
 
+import cv2
 import numpy
+import numpy as np
+import pyrender
+import skimage.io
 import smplx
-from matplotlib import pyplot
-from smplx import SMPLXLayer
-from smplx.utils import SMPLXOutput
-
-import os
-
 import torch
 import trimesh
-import pyrender
-import numpy as np
-import colorsys
-import cv2
-import skimage.io
+from matplotlib import pyplot
 from scipy.spatial.transform import Rotation
+from smplx import SMPLXLayer
 
 this_filepath = Path(__file__)
 this_filename = this_filepath.stem
@@ -113,7 +109,7 @@ def perspective_projection(points, rotation, translation, intrinsics):
     return projected_points_2d
 
 
-def get_camera_intrinsics(focal_length, resolution, camera_center = None):
+def get_camera_intrinsics(focal_length, resolution, camera_center=None):
     h, w = resolution
     if camera_center is not None:
         cx, cy = camera_center
@@ -195,13 +191,15 @@ def main():
     # smplx_output = smplx_model(betas=shape_params_tr, body_pose=pose_axis_angles_tr[:, 1:], global_orient=pose_axis_angles_tr[:, :1], return_verts=True)
 
     smplx_model = SMPLXLayer(models_dirpath.as_posix(), num_betas=num_shape_params)
-    smplx_output = smplx_model(betas=shape_params_tr, body_pose=pose_matrices_tr[:, 1:], global_orient=pose_matrices_tr[:, :1], pose2rot=False)
+    smplx_output = smplx_model(betas=shape_params_tr, body_pose=pose_matrices_tr[:, 1:],
+                               global_orient=pose_matrices_tr[:, :1], pose2rot=False)
 
     faces = smplx_model.faces
     raw_vertices = smplx_output.vertices
     translated_vertices = raw_vertices + camera_translation
 
-    renderer = Renderer(focal_length=focal_length, img_w=w, img_h=h, camera_center=camera_center, faces=faces, same_mesh_color=False)
+    renderer = Renderer(focal_length=focal_length, img_w=w, img_h=h, camera_center=camera_center, faces=faces,
+                        same_mesh_color=False)
     front_view = renderer.render_front_view(translated_vertices.cpu().numpy(), bg_img_rgb=image.copy())
 
     joints3d = smplx_output.joints[0]
