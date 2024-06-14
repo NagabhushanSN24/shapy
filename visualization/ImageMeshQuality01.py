@@ -27,7 +27,7 @@ def save_image(image_path: Path, image):
 
 def main():
     test_num = 1
-    qa_name = 'MPJPPE01'
+    qa_name = 'MPJPPE02'
 
     test_dirpath = Path(f'../../runs/testing/test{test_num:04}')
     qa_scores_path = next(test_dirpath.glob(f'quality_scores/{qa_name}*.csv'))
@@ -46,7 +46,8 @@ def main():
 
             qa_score = qa_scores_data[(qa_scores_data['video_name'] == video_name) & (qa_scores_data['frame_num'] == frame_num)][qa_name].values[0]
             image_mesh = read_image(image_mesh_path)
-            cv2.putText(image_mesh, str(qa_score), (50, 3840-150), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 128, 128, 255), 3, cv2.LINE_AA)
+            cv2.putText(image_mesh, qa_name, (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 128, 128, 255), 3, cv2.LINE_AA)
+            cv2.putText(image_mesh, str(qa_score), (50, 250), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 128, 128, 255), 3, cv2.LINE_AA)
             save_image(output_path, image_mesh)
     return
 

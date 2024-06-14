@@ -139,8 +139,9 @@ class MPJPPE:
 
     @staticmethod
     def read_smplx_data(smplx_data_path: Path):
-        # Load torch tensors on CPU directly: https://stackoverflow.com/a/78399538/3337089
-        torch.serialization.register_package(0, lambda x: x.device.type, lambda x, _: x.cpu())
+        if not torch.cuda.is_available():
+            # Load torch tensors on CPU directly: https://stackoverflow.com/a/78399538/3337089
+            torch.serialization.register_package(0, lambda x: x.device.type, lambda x, _: x.cpu())
         smplx_dict = {}
         with numpy.load(smplx_data_path.as_posix(), allow_pickle=True) as smplx_data:
             # smplx_data = {key: smplx_data[key] for key in smplx_data.files}
