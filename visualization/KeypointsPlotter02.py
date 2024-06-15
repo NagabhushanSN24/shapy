@@ -26,7 +26,6 @@ this_filename = this_filepath.stem
 
 class Renderer(object):
     def __init__(self, focal_length=600, img_w=512, img_h=512, camera_center=None, faces=None, same_mesh_color=False):
-        os.environ['PYOPENGL_PLATFORM'] = 'osmesa'
         self.renderer = pyrender.OffscreenRenderer(viewport_width=img_w, viewport_height=img_h, point_size=1.0)
         if camera_center is not None:
             self.camera_center = camera_center
