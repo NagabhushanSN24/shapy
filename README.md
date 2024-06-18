@@ -52,6 +52,16 @@ cd regressor
 python demo.py --save-vis true --save-params true --save-mesh true --split test --datasets openpose --output-folder ../samples/shapy_fit/ --exp-cfg configs/b2a_expose_hrnet_demo.yaml --exp-opts output_folder=../data/trained_models/shapy/SHAPY_A part_key=pose datasets.pose.openpose.data_folder=../samples datasets.pose.openpose.img_folder=images  datasets.pose.openpose.keyp_folder=openpose datasets.batch_size=1 datasets.pose_shape_ratio=1.0
 ```
 
+##### SHAPY on videos
+```shell
+python demo_videos.py --save-vis true --save-params true --save-mesh true --split test --datasets openpose  --videos-dirpath ../../../../../../databases/spree_internal/data/rgb_png  --keypoints-path-format ../../../../research/001_VitPose_Halpe/runs/testing/test0001/{video_name}/json/{frame_num:04}.json --output-dirpath ../../runs/testing/test0001/ --exp-cfg configs/b2a_expose_hrnet_demo.yaml --exp-opts output_folder=../data/trained_models/shapy/SHAPY_A part_key=pose datasets.batch_size=1 datasets.pose_shape_ratio=1.0
+```
+
+#### SHAPY on ModelAgency dataset
+```shell
+python demo_videos.py --save-vis true --save-params true --save-mesh true --split test --datasets openpose  --videos-dirpath ../../../../../../databases/ModelAgency/data/test/rgb  --keypoints-path-format ../../../../research/001_VitPose_Halpe/runs/testing/test1001/{video_name}/json/{frame_name}.json --output-dirpath ../../runs/testing/test1001/ --exp-cfg configs/b2a_expose_hrnet_demo.yaml --exp-opts output_folder=../data/trained_models/shapy/SHAPY_A part_key=pose datasets.batch_size=1 datasets.pose_shape_ratio=1.0
+```
+
 
 #### Virtual Measurements
 
