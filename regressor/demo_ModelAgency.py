@@ -54,14 +54,14 @@ def main():
             model_index, model_name, frame_num = int(frame_name.split('_')[0]), frame_name.split('_')[1][:-2], int(frame_name.split('_')[1][-2:])
             keypoints_path = Path(keypoints_path_format.format(agency_name=agency_name, frame_name=frame_name))
             tmp_frame_path = tmp_images_dirpath / f'{frame_name}.png'
-            tmp_keypoints_path = tmp_keypoints_dirpath / f'{frame_num:04}.json'
+            tmp_keypoints_path = tmp_keypoints_dirpath / f'{frame_name}.json'
             tmp_frame_path.symlink_to(frame_path)
             tmp_keypoints_path.symlink_to(keypoints_path)
 
         agency_output_dirpath = output_dirpath / f'{agency_name}'
         agency_output_dirpath.mkdir(parents=True, exist_ok=True)
         demo_args = copy.deepcopy(args)
-        del demo_args.videos_dirpath
+        del demo_args.rgb_dirpath
         del demo_args.keypoints_path_format
         del demo_args.output_dirpath
         demo_args.output_folder = agency_output_dirpath.as_posix()
