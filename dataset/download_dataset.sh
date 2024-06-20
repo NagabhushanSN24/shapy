@@ -9,15 +9,15 @@ username=$(urle $username)
 password=$(urle $password)
 
 # mkdir -p ./HBW
-# wget --post-data "username=$username&password=$password" 'https://download.is.tue.mpg.de/download.php?domain=shapy&resume=1&sfile=HBW.zip' -O './HBW.zip' --no-check-certificate --continue
-# unzip ./HBW.zip -d ./HBW
-# rm ./HBW.zip
+ wget --post-data "username=$username&password=$password" 'https://download.is.tue.mpg.de/download.php?domain=shapy&resume=1&sfile=HBW.zip' -O './HBW.zip' --no-check-certificate --continue
+ unzip ./HBW.zip -d ./HBW
+ rm ./HBW.zip
 
 # ModelAgencyData
-# mkdir -p ./ModelAgencyData
-# wget --post-data "username=$username&password=$password" 'https://download.is.tue.mpg.de/download.php?domain=shapy&resume=1&sfile=ModelAgencyData.zip' -O './ModelAgencyData.zip' --no-check-certificate --continue
-# unzip ./ModelAgencyData.zip -d ./ModelAgencyData
-# rm ./ModelAgencyData.zip
+ mkdir -p ./ModelAgencyData
+ wget --post-data "username=$username&password=$password" 'https://download.is.tue.mpg.de/download.php?domain=shapy&resume=1&sfile=ModelAgencyData.zip' -O './ModelAgencyData.zip' --no-check-certificate --continue
+ unzip ./ModelAgencyData.zip -d ./ModelAgencyData
+ rm ./ModelAgencyData.zip
 
 # SSP-3D
 mkdir -p  ./SSP-3D
