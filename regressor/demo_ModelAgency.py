@@ -1,4 +1,4 @@
-# Calls demo for images of ModelAgency dataset
+# Calls demo for images of ModelAgency01 dataset
 
 import argparse
 import copy
@@ -82,7 +82,7 @@ def parse_args():
                         nargs='+',
                         help='The configuration of the experiment')
     parser.add_argument('--rgb-dirpath', dest='rgb_dirpath',
-                        default='../../../../../../databases/ModelAgency/data/test/rgb', type=str,
+                        default='../../../../../../databases/ModelAgency01/data/test/rgb', type=str,
                         help='The path to the rgb directory')
     parser.add_argument('--keypoints-path-format', dest='keypoints_path_format', type=str,
                         default='../../../../research/001_VitPose_Halpe/runs/testing/test1001/{agency_name}/json/{frame_name}.json',

@@ -95,7 +95,7 @@ def parse_args():
                         nargs='+',
                         help='The configuration of the experiment')
     parser.add_argument('--videos-dirpath', dest='videos_dirpath',
-                        default='../../../../../../databases/spree_internal/data/rgb_png', type=str,
+                        default='../../../../../../databases/Spree01/data/rgb_png', type=str,
                         help='The path to directory containing videos (frames)')
     parser.add_argument('--keypoints-path-format', dest='keypoints_path_format', type=str,
                         default='../../../../research/001_VitPose_Halpe/runs/testing/test0001/{video_name}/json/{frame_num:04}.json',

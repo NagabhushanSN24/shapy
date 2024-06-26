@@ -65,7 +65,7 @@ python demo_videos.py --save-vis true --save-params true --save-mesh true --spli
 
 #### SHAPY on ModelAgency dataset
 ```shell
-python demo_ModelAgency.py --save-vis true --save-params true --save-mesh true --split test --datasets openpose  --videos-dirpath ../../../../../../databases/ModelAgency/data/test/rgb  --keypoints-path-format ../../../../research/001_VitPose_Halpe/runs/testing/test1001/{video_name}/json/{frame_name}.json --output-dirpath ../../runs/testing/test1001/ --exp-cfg configs/b2a_expose_hrnet_demo.yaml --exp-opts output_folder=../data/trained_models/shapy/SHAPY_A part_key=pose datasets.batch_size=1 datasets.pose_shape_ratio=1.0
+python demo_ModelAgency.py --save-vis true --save-params true --save-mesh true --split test --datasets openpose  --videos-dirpath ../../../../../../databases/ModelAgency01/data/test/rgb  --keypoints-path-format ../../../../research/001_VitPose_Halpe/runs/testing/test1001/{video_name}/json/{frame_name}.json --output-dirpath ../../runs/testing/test1001/ --exp-cfg configs/b2a_expose_hrnet_demo.yaml --exp-opts output_folder=../data/trained_models/shapy/SHAPY_A part_key=pose datasets.batch_size=1 datasets.pose_shape_ratio=1.0
 ```
 
 
